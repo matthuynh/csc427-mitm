@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+    host_a:
+        build: .
+        image: victim:latest
+        container_name: alice
+        tty: true
+        cap_add:
+                - ALL
+        networks:
+            net-10.9.0.0:
+                ipv4_address: 10.9.0.5
+        command: bash -c "
+                      tail -f /dev/null
+                 "
+                  
+    host_b:
+        build: .
+        image: victim:latest
+        container_name: bob
+        tty: true
+        cap_add:
+                - ALL
+        networks:
+            net-10.9.0.0:
+                ipv4_address: 10.9.0.6
+
+        command: bash -c "
+                      npm install http-echo-server -g &&
+                      tail -f /dev/null
+                 "
+networks:
+    net-10.9.0.0:
+        name: net-10.9.0.0
+        ipam:
+            config:
+                - subnet: 10.9.0.0/24
